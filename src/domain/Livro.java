@@ -21,17 +21,17 @@ public class Livro {
 			throw new IllegalArgumentException("Campo autor é obrigatório.");
 		}
 		
-		if (isbn == null || isbn.trim().isEmpty()) {
-			throw new IllegalArgumentException("Campo ISBN é obrigatório.");
-		}
-		
 		if (categoria == null) {
 			throw new IllegalArgumentException("Campo categoria é obrigatório.");
 		}
 		
+		if (!IsbnValidator.isValido(isbn)) {
+            throw new IllegalArgumentException("ISBN inválido! Informe um ISBN-10 ou ISBN-13 correto (ex: 978-85-359-0277-7).");
+        }
+		
 		this.titulo = titulo;
 		this.autor = autor;
-		this.isbn = isbn;
+		this.isbn = isbn.replace("-", "").replace(" ", "").trim();
 		this.categoria = categoria;
 		
 	}
@@ -57,10 +57,10 @@ public class Livro {
 	}
 
 	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return "Livro: " + titulo + " | Autor: " + autor.getNome() + " | ISBN: " + isbn + " | Categoria: " + categoria.getNomeCategoria();
-	}
+    public String toString() {
+        return String.format("'%s' - %s (ISBN: %s) [%s]", 
+            titulo, autor.getNome(), isbn, categoria.getNomeCategoria());
+    }
 	
 	
 }

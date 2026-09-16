@@ -33,7 +33,7 @@ public class BibliotecaFrame extends JFrame {
 		
 		// Instancia o formulário extraído e o aplica na janela
 		formLivroPanel = new FormLivroPanel();
-		formLivroPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		formLivroPanel.setBorder(new EmptyBorder(30, 30, 30, 30));
 		setContentPane(formLivroPanel);
 		
 		
