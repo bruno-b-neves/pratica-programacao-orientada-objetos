@@ -23,6 +23,10 @@ public class LivroController {
 		repository.salvar(novoLivro);
 	}
 
+	public void removerLivro(int index) {
+		repository.remover(index);
+	}
+
 	public List<Livro> listarLivros() {
 		return repository.listarTodos();
 	}
