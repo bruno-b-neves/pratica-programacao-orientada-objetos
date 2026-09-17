@@ -1,20 +1,26 @@
 package view;
 
+import java.util.Arrays;
+import java.util.List;
+
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.FocusTraversalPolicy;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
-import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 /**
@@ -44,73 +50,56 @@ public class FormLivroPanel extends JPanel {
     private JButton 			btnLimpar;
 
     public FormLivroPanel() {
-        setLayout		(null);
+        setLayout		(new BorderLayout(15, 15));
         setBackground	(COR_FUNDO);
+        setBorder       (BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Borda com espaçamento interno suave (padding) para as caixas de texto
         Border bordaCampos = BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder	(COR_BORDA, 1),
-            BorderFactory.createEmptyBorder	(3, 6, 3, 6)
+            BorderFactory.createEmptyBorder	(4, 6, 4, 6)
         );
 
-        // --- Rótulos e Campos ---
-        JLabel txtTitulo = new JLabel	("Título");
-        txtTitulo.setFont				(FONTE_ROTULO);
-        txtTitulo.setForeground			(COR_TEXTO);
-        txtTitulo.setBounds				(15, 15, 50, 20);
-        add								(txtTitulo);
+        // --- PAINEL DO FORMULÁRIO (GridBagLayout para Responsividade) ---
+        JPanel pnlForm = new JPanel(new GridBagLayout());
+        pnlForm.setBackground(COR_FUNDO);
 
-        inputTitulo = new JTextField();
-        txtTitulo.setLabelFor			(inputTitulo);
-        inputTitulo.setFont				(FONTE_CAMPO);
-        inputTitulo.setBorder			(bordaCampos);
-        inputTitulo.setBounds			(75, 12, 245, 26);
-        add								(inputTitulo);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 6, 6, 6);
+        gbc.anchor = GridBagConstraints.WEST;
 
-        JLabel txtAutor = new JLabel	("Autor");
-        txtAutor.setFont				(FONTE_ROTULO);
-        txtAutor.setForeground			(COR_TEXTO);
-        txtAutor.setBounds				(15, 45, 50, 20);
-        txtAutor.setHorizontalAlignment	(SwingConstants.LEFT);
-        add								(txtAutor);
+        // Linha 0: Título
+        adicionarRotulo ("Título", pnlForm, gbc, 0);
+        inputTitulo =   new JTextField();
+        adicionarCampo  (inputTitulo, bordaCampos, pnlForm, gbc, 0);
 
+        // Linha 1: Autor
+        adicionarRotulo ("Autor", pnlForm, gbc, 1);
         inputAutor = new JTextField();
-        txtAutor.setLabelFor			(inputAutor);
-        inputAutor.setFont				(FONTE_CAMPO);
-        inputAutor.setBorder			(bordaCampos);
-        inputAutor.setBounds			(75, 42, 245, 26);
-        add(inputAutor);
+        adicionarCampo  (inputAutor, bordaCampos, pnlForm, gbc, 1);
 
-        JLabel txtIsbn = new JLabel		("ISBN");
-        txtIsbn.setFont					(FONTE_ROTULO);
-        txtIsbn.setForeground			(COR_TEXTO);
-        txtIsbn.setBounds				(15, 75, 50, 20);
-        add								(txtIsbn);
-
+        // Linha 2: ISBN
+        adicionarRotulo("ISBN", pnlForm, gbc, 2);
         inputIsbn = new JTextField();
-        txtIsbn.setLabelFor				(inputIsbn);
-        inputIsbn.setFont				(FONTE_CAMPO);
-        inputIsbn.setBorder				(bordaCampos);
-        inputIsbn.setBounds				(75, 72, 245, 26);
-        add								(inputIsbn);
+        adicionarCampo  (inputIsbn, bordaCampos, pnlForm, gbc, 2);
 
-        JLabel txtCategoria = new JLabel("Categoria");
-        txtCategoria.setFont			(FONTE_ROTULO);
-        txtCategoria.setForeground		(COR_TEXTO);
-        txtCategoria.setBounds			(15, 105, 65, 20);
-        add								(txtCategoria);
-
+        // Linha 3: Categoria
+        adicionarRotulo("Categoria", pnlForm, gbc, 3);
         String[] opcoesCategorias = {"", "Ficção", "Romance", "Técnico", "Biografia"};
         selectCategoria = new JComboBox<>(opcoesCategorias);
         selectCategoria.setFont			(FONTE_CAMPO);
-        selectCategoria.setBounds		(85, 102, 235, 26);
-        add								(selectCategoria);
+
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        pnlForm.add(selectCategoria, gbc);
+
+        add(pnlForm, BorderLayout.CENTER);
 
         // --- Painel de Botões Nativos ---
-        JPanel panelBotoes = new JPanel();
+        JPanel panelBotoes = new JPanel (new FlowLayout(FlowLayout.RIGHT, 10, 0));
         panelBotoes.setBackground		(COR_FUNDO);
-        panelBotoes.setBounds			(15, 140, 305, 40);
-        add								(panelBotoes);
 
         // Botão Secundário (Ação Neutra)
         btnLimpar = new JButton			("Limpar");
@@ -118,17 +107,47 @@ public class FormLivroPanel extends JPanel {
         btnLimpar.setBackground			(COR_BTN_LIMPAR);
         btnLimpar.setMnemonic			(KeyEvent.VK_L);
         btnLimpar.setToolTipText		("Atalho: Alt + L");
-        panelBotoes.add					(btnLimpar);
-
+        
         // Botão Principal (Destaque por Tipografia em Negrito)
         btnSalvar = new JButton			("Salvar");
         btnSalvar.setFont				(FONTE_ROTULO);
-        btnLimpar.setBackground			(COR_BTN_SALVAR);
+        btnSalvar.setBackground			(COR_BTN_SALVAR);
         btnSalvar.setMnemonic			(KeyEvent.VK_S);
         btnSalvar.setToolTipText		("Atalho: Alt + S");
+        
+        panelBotoes.add					(btnLimpar);
         panelBotoes.add					(btnSalvar);
 
+        add                             (panelBotoes, BorderLayout.SOUTH);
+
         configurarOrdemDeFoco();
+    }
+
+    /**
+     * Método auxiliar para criar e posicionar rótulos no GridBagLayout.
+     */
+    private void adicionarRotulo(String texto, JPanel painel, GridBagConstraints gbc, int linha) {
+        JLabel lbl = new JLabel(texto);
+        lbl.setFont(FONTE_ROTULO);
+        lbl.setForeground(COR_TEXTO);
+        gbc.gridx = 0;
+        gbc.gridy = linha;
+        gbc.weightx = 0.0; // Não expande
+        gbc.fill = GridBagConstraints.NONE;
+        painel.add(lbl, gbc);
+    }
+
+    /**
+     * Método auxiliar para configurar e posicionar campos de texto no GridBagLayout.
+     */
+    private void adicionarCampo(JTextField campo, Border borda, JPanel painel, GridBagConstraints gbc, int linha) {
+        campo.setFont(FONTE_CAMPO);
+        campo.setBorder(borda);
+        gbc.gridx = 1;
+        gbc.gridy = linha;
+        gbc.weightx = 1.0; // Expande horizontalmente ao esticar a janela
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        painel.add(campo, gbc);
     }
 
     private void configurarOrdemDeFoco() {
